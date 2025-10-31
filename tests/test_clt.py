@@ -52,7 +52,13 @@ class MockTransformer(nn.Module):
             attn_weights = self._create_mock_attention(batch_size, seq_len)
             attentions.append(attn_weights)
             
-            x = layer(x, src_key_padding_mask=attention_mask)
+            # Convert attention_mask to key_padding_mask format (invert for transformer)
+            if attention_mask is not None:
+                key_padding_mask = ~attention_mask
+            else:
+                key_padding_mask = None
+            
+            x = layer(x, src_key_padding_mask=key_padding_mask)
             hidden_states.append(x)
         
         # Stack hidden states (skip embedding layer)
