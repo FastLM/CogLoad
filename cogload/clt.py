@@ -281,6 +281,10 @@ class CognitiveLoadTraces:
             )
             
             hidden_states = torch.stack(outputs.hidden_states[1:])  # Skip embedding layer
+            # Remove batch dimension if present: [num_layers, batch, seq, hidden] -> [num_layers, seq, hidden]
+            if hidden_states.dim() == 4:
+                hidden_states = hidden_states.squeeze(1)
+            
             attentions = outputs.attentions
             
             num_layers = hidden_states.shape[0]
@@ -330,11 +334,11 @@ class CognitiveLoadTraces:
                 
                 el_trace.append(el_t)
                 
-                # Compute GL - use full attention sequence for this layer
-                # Get average attention across sequence dimension
-                attn_for_gl = attention_weights[:, :, :t+1].mean(dim=-2)  # [num_layers, num_heads, t+1]
-                # Reduce to [num_layers, num_heads] by taking mean
-                attn_for_gl = attn_for_gl.mean(dim=-1)  # [num_layers, num_heads]
+                # Compute GL - need to reshape attention for concept reuse
+                # attention_weights is [num_layers, num_heads, seq_len, seq_len]
+                # For GL, we need [num_layers, num_heads, seq_len]
+                # Take attention for position t across all positions
+                attn_for_gl = attention_weights[:, :, t, :seq_len]  # [num_layers, num_heads, seq_len]
                 gl_t = self.compute_germane_load(
                     hidden_states[:, :, :],
                     attn_for_gl,
