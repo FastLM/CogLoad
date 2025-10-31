@@ -187,9 +187,9 @@ If you use this framework, please cite:
 }
 ```
 
-## License
+<!-- ## License
 
-This project is licensed under CC BY 4.0.
+This project is licensed under CC BY 4.0. -->
 
 ## Acknowledgments
 
@@ -198,7 +198,7 @@ Inspired by Cognitive Load Theory (Sweller, 1988; Paas & van Merriënboer, 1993)
 ## Future Directions
 
 - [ ] Extend to multimodal reasoning tasks
-- [ ] Real-time intervention systems for production
+<!-- - [ ] Real-time intervention systems for production
 - [ ] Architecture-aware CLTs for mixture-of-experts models
-- [ ] Data-centric safety frameworks using load signals
+- [ ] Data-centric safety frameworks using load signals -->
 
