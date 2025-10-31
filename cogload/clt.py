@@ -300,7 +300,9 @@ class CognitiveLoadTraces:
             # Compute CLT for each decoding step
             for t in range(seq_len):
                 # Get attention for step t
-                attn_t = attention_weights[:, :, t, :t+1].squeeze(-1)  # [num_layers, num_heads, t+1]
+                attn_t = attention_weights[:, :, t, :t+1].squeeze(dim=-1)  # [num_layers, num_heads, t+1]
+                if attn_t.dim() == 2:
+                    attn_t = attn_t.unsqueeze(-1)
                 
                 # Compute IL
                 il_t = self.compute_intrinsic_load(
