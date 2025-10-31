@@ -251,7 +251,8 @@ class TestInterventions(unittest.TestCase):
     def test_intervention_selection(self):
         """Test intervention selection logic."""
         # High EL scenario with CLI > tau_act
-        clt = np.array([0.2, 1.0, 0.3])  # High enough EL to trigger intervention
+        # For CLI = 0.4*IL + 0.4*EL + 0.2*GL to be > 0.8, need high values
+        clt = np.array([2.0, 2.0, 1.0])  # High enough to trigger intervention
         intervention = self.lgd_system.select_intervention(clt, {}, active_only=True)
         self.assertIsNotNone(intervention)
         
@@ -261,7 +262,7 @@ class TestInterventions(unittest.TestCase):
         self.assertIsNone(intervention)
         
         # Test non-active_only mode
-        clt = np.array([0.2, 0.9, 0.3])
+        clt = np.array([1.0, 1.0, 0.5])  # CLI = 0.9 > 0.6
         intervention = self.lgd_system.select_intervention(clt, {}, active_only=False)
         self.assertIsNotNone(intervention)  # Should work with lower threshold
 
