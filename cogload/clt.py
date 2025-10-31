@@ -330,10 +330,14 @@ class CognitiveLoadTraces:
                 
                 el_trace.append(el_t)
                 
-                # Compute GL
+                # Compute GL - use full attention sequence for this layer
+                # Get average attention across sequence dimension
+                attn_for_gl = attention_weights[:, :, :t+1].mean(dim=-2)  # [num_layers, num_heads, t+1]
+                # Reduce to [num_layers, num_heads] by taking mean
+                attn_for_gl = attn_for_gl.mean(dim=-1)  # [num_layers, num_heads]
                 gl_t = self.compute_germane_load(
                     hidden_states[:, :, :],
-                    attention_weights[:, :, :, :],
+                    attn_for_gl,
                     t,
                     concept_map
                 )
